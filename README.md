@@ -1,0 +1,1 @@
+# inertia-vue-students-management
