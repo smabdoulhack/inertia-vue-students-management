@@ -20,6 +20,7 @@ const deleteStudent = (studentId: string | number) => {
 const search = ref(usePage().props.search)
 const pageNumber = ref(1)
 
+//avec computed, lorsqu'une des composantes de l'url change, on la variable est mise à jour
 const studentUrl = computed(() => {
     const url = new URL(route("students.index"))
 
@@ -32,16 +33,24 @@ const studentUrl = computed(() => {
     return url
 })
 
-const updatedPageNumber = (link : string) => {
+const updatedPageNumber = (link: string) => {
     pageNumber.value = link.url.split("=")[1]
 }
 
+// Dès que l'url change, la page est mise à jour systématiquement
 watch(() => studentUrl.value, (updatedStudentUrl) => {
     router.visit(updatedStudentUrl, {
         preserveScroll: true,
         preserveState: true,
         replace: true
     })
+})
+
+// Commencer l'affichage des résultats de recherches par la première page peu importe la page sur laquelle la recherche est faite
+watch(() => search.value, (value) => {
+    if (value) {
+        pageNumber.value = 1
+    }
 })
 
 </script>
@@ -118,13 +127,6 @@ watch(() => studentUrl.value, (updatedStudentUrl) => {
                                 <tbody>
                                     <tr v-if="students.data.length" v-for="student in students.data"
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <!-- <td class="w-4 p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-table-search-1" type="checkbox"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                                            </div>
-                                        </td> -->
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ student.name }}
