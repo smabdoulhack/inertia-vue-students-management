@@ -2,44 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreStudentRequest;
-use App\Http\Requests\UpdateStudentRequest;
-use App\Http\Resources\StudentResource;
+use Inertia\Inertia;
 use App\Models\Classes;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Http\Resources\ClassesResource;
+use App\Http\Resources\StudentResource;
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 
 class StudentController extends Controller
 {
 
     public function index(Request $request)
     {
-        $studentsQuery = Student::query();
+        $studentsQuery = Student::search($request);
 
-        $this->applySearch($studentsQuery, $request->search);
+        $classes = StudentResource::collection(Classes::all());
+
+        if ($request->class_id) {
+            $studentsQuery->where('class_id', $request->class_id);
+        }
 
         $students = StudentResource::collection($studentsQuery->paginate(10));
 
-        // dd($students);
-
         return Inertia('Students/Index', [
             'students' => $students,
+            'classes' => $classes,
+            'class_ids' => $request->class_id ?? '',
             'search' => $request->search ?? '',
         ]);
     }
 
     protected function applySearch($query, $search)
     {
-        return $query->when($search, function ($query, $search) {
-            return $query->where('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%');
-        });
+
     }
 
     public function create()
     {
-        $classes = StudentResource::collection(Classes::all());
+        $classes = ClassesResource::collection(Classes::all());
         return Inertia('Students/Create', [
             'classes' => $classes,
         ]);
@@ -54,7 +56,7 @@ class StudentController extends Controller
 
     public function edit(Student $student)
     {
-        $classes = StudentResource::collection(Classes::all());
+        $classes = ClassesResource::collection(Classes::all());
 
         return Inertia('Students/Edit', [
             'classes' => $classes,
