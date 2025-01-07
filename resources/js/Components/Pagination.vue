@@ -4,6 +4,10 @@ defineProps({
         type: Object,
         required: true,
     },
+    updatedPageNumber: {
+        type: Function,
+        required: true,
+    }
 })
 
 import { usePage, router } from '@inertiajs/vue3';
@@ -29,7 +33,7 @@ const updatePageNumber = (link) => {
             <ul class="inline-flex -space-x-px text-base h-10">
                 <li v-for="(link, index) in data.meta.links" :key="index">
 
-                    <button @click.prevent="updatePageNumber(link)" aria-current="page"
+                    <button @click.prevent="updatedPageNumber(link)" aria-current="page"
                         :disabled="!link.url || link.active"
                         class="flex items-center justify-center px-4 h-10  border-gray-300 hover:bg-blue-100  dark:border-gray-700 dark:bg-gray-700 dark:text-white"
                         :class="{

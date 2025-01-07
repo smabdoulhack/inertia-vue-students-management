@@ -48,6 +48,13 @@ php artisan make:resource StudentResource
 
 Elle génère une classe située dans le dossier app/Http/Resources, qui est utilisée pour transformer les modèles ou collections de données en réponses JSON formatées de manière cohérente pour les API.
 
--   Transformer les données avant de les renvoyer dans une APIF
--   Abstraction des données sensibles
--   Facilité de formatage
+- Transformer les données avant de les renvoyer dans une APIF
+- Abstraction des données sensibles
+- Facilité de formatage
+
+## La méthode __invoke
+
+Dans une classe PHP (comme dans le contrôleur Laravel ici) permet de définir la classe comme "invocable". Cela signifie qu'on peut l'appeler directement comme si c'était une fonction, sans spécifier de méthode explicitement.
+
+Pourquoi utiliser __invoke dans Laravel ?
+Dans Laravel, la méthode __invoke est particulièrement utile lorsqu'une classe contrôleur gère une seule action. Au lieu d'avoir une méthode spécifique comme index, store, ou update, vous définissez toute la logique dans __invoke.
